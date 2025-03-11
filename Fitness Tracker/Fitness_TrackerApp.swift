@@ -9,6 +9,7 @@ import SwiftUI
 
 @main
 struct Fitness_TrackerApp: App {
+    let persistenceController = PersistenceController.shared.container.viewContext
     var body: some Scene {
         WindowGroup {
             ContentView()
