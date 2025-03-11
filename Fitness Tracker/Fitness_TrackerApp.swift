@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+//
 @main
 struct Fitness_TrackerApp: App {
     let persistenceController = PersistenceController.shared.container.viewContext

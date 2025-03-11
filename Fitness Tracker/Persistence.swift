@@ -12,6 +12,7 @@ struct PersistenceController {
 
     let container: NSPersistentContainer
 
+    
     init() {
         container = NSPersistentContainer(name: "Exercises") // Имя модели
         container.loadPersistentStores { _, error in
