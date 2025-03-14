@@ -41,6 +41,7 @@ jobs:
             -scheme "Fitness Tracker" \
             -destination 'platform=iOS Simulator,name=iPhone 15,OS=17.0' \
             -enableCodeCoverage YES \
+            CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGN_IDENTITY="" \
             PROVISIONING_PROFILE_SPECIFIER="" | xcpretty && exit ${PIPESTATUS[0]}
