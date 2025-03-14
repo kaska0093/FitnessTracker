@@ -9,27 +9,29 @@ on:
       - main  # Триггерим процесс при открытии PR на main
 
 jobs:
-  build:
-    runs-on: macos-latest  # Указываем, что используем MacOS runner для сборки
-
+  test:
+    runs-on: macos-latest  # Запускаем на macOS
     steps:
-      # Шаг 1: Checkout репозитория
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - name: 📥 Клонируем репозиторий
+        uses: actions/checkout@v4
 
-      # Шаг 3: Сборка проекта Xcode
-      - name: Build Xcode Project
-        run: |
-          xcodebuild -project "Fitness Tracker.xcodeproj" \
-          -scheme "Fitness Tracker" \
-          -sdk iphonesimulator \
-          -destination 'platform=iOS Simulator,name=iPhone 15' \
-          clean build
+      - name: 🛠️ Устанавливаем Xcode версию
+        run: sudo xcode-select -s /Applications/Xcode_15.0.app  # Укажи актуальную версию
 
-      # Шаг 4: Тестирование проекта
-      - name: Run Unit Tests
+      - name: 📦 Устанавливаем зависимости
         run: |
-          xcodebuild test -project "Fitness Tracker.xcodeproj" \
-          -scheme "Fitness Tracker" \
-          -sdk iphonesimulator \
-          -destination 'platform=iOS Simulator,name=iPhone 15'
+          cd Fitness_Tracker  # Укажи путь до проекта, если он в подпапке
+          pod install --silent || echo "No CocoaPods"
+
+      - name: 🔍 Запускаем тесты
+        run: |
+          cd Fitness_Tracker
+          xcodebuild test \
+            -scheme Fitness_Tracker \
+            -destination 'platform=iOS Simulator,name=iPhone 15,OS=17.0' \
+            -enableCodeCoverage YES | xcpretty && exit ${PIPESTATUS[0]}
+
+      - name: 📊 Загружаем покрытие кода (опционально)
+        uses: codecov/codecov-action@v4
+        with:
+          fail_ci_if_error: true
