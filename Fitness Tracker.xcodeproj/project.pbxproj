@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		11BBEC2E2D84113800B4D2FF /* ExerciseEntity+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11BBEC2C2D84113800B4D2FF /* ExerciseEntity+CoreDataClass.swift */; };
+		11BBEC2F2D84113800B4D2FF /* ExerciseEntity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11BBEC2D2D84113800B4D2FF /* ExerciseEntity+CoreDataProperties.swift */; };
 		11E590F22D65F0A20062B1FE /* Fitness_TrackerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11E590F12D65F0A20062B1FE /* Fitness_TrackerApp.swift */; };
 		11E590F42D65F0A20062B1FE /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11E590F32D65F0A20062B1FE /* ContentView.swift */; };
 		11E590F62D65F0A40062B1FE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 11E590F52D65F0A40062B1FE /* Assets.xcassets */; };
@@ -17,6 +19,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		11BBEC2C2D84113800B4D2FF /* ExerciseEntity+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ExerciseEntity+CoreDataClass.swift"; sourceTree = "<group>"; };
+		11BBEC2D2D84113800B4D2FF /* ExerciseEntity+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ExerciseEntity+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		11E590EE2D65F0A20062B1FE /* Fitness Tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Fitness Tracker.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		11E590F12D65F0A20062B1FE /* Fitness_TrackerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fitness_TrackerApp.swift; sourceTree = "<group>"; };
 		11E590F32D65F0A20062B1FE /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -41,6 +45,8 @@
 		11E590E52D65F0A20062B1FE = {
 			isa = PBXGroup;
 			children = (
+				11BBEC2C2D84113800B4D2FF /* ExerciseEntity+CoreDataClass.swift */,
+				11BBEC2D2D84113800B4D2FF /* ExerciseEntity+CoreDataProperties.swift */,
 				11E590F02D65F0A20062B1FE /* Fitness Tracker */,
 				11E590EF2D65F0A20062B1FE /* Products */,
 			);
@@ -148,6 +154,8 @@
 			files = (
 				11E591012D65F1210062B1FE /* Exercises.xcdatamodeld in Sources */,
 				11E591092D65F6920062B1FE /* ExerciseViewModel.swift in Sources */,
+				11BBEC2E2D84113800B4D2FF /* ExerciseEntity+CoreDataClass.swift in Sources */,
+				11BBEC2F2D84113800B4D2FF /* ExerciseEntity+CoreDataProperties.swift in Sources */,
 				11E591072D65F56F0062B1FE /* Persistence.swift in Sources */,
 				11E590F42D65F0A20062B1FE /* ContentView.swift in Sources */,
 				11E590F22D65F0A20062B1FE /* Fitness_TrackerApp.swift in Sources */,
