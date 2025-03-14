@@ -17,12 +17,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Шаг 2: Установка зависимостей (CocoaPods, если необходимо)
-      - name: Install dependencies (CocoaPods)
-        run: |
-          gem install cocoapods
-          pod install
-
       # Шаг 3: Сборка проекта Xcode
       - name: Build Xcode Project
         run: |
