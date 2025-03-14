@@ -10,12 +10,16 @@ import CoreData
 
 class ExerciseViewModel: ObservableObject {
     
-    private let context = PersistenceController.shared.container.viewContext
+    private var context = PersistenceController.shared.container.viewContext
 
     @Published var exercises: [ExerciseEntity] = []
 
     init() {
         fetchExercises()
+    }
+    
+    func setContext(_ context: NSManagedObjectContext) {
+        self.context = context
     }
 
     func fetchExercises() {
