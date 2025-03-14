@@ -1,27 +1,37 @@
-name: Build Fitness Tracker
+name: Build and Test iOS Project
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main  # Триггерим процесс на push в ветку main
   pull_request:
-    branches: [ main ]
+    branches:
+      - main  # Триггерим процесс при открытии PR на main
 
 jobs:
-  build:
-    runs-on: macos-latest
-
+  test:
+    runs-on: macos-latest  # Запускаем на macOS
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      - name: 📥 Клонируем репозиторий
+        uses: actions/checkout@v4
 
-    - name: List Xcode versions
-      run: ls /Applications | grep Xcode
+      - name: 🛠️ Устанавливаем Xcode версию
+        run: sudo xcode-select -s /Applications/Xcode_15.0.app  # Укажи актуальную версию
 
-    - name: Select Xcode version
-      run: sudo xcode-select -s /Applications/Xcode_15.2.app
+      - name: 📦 Устанавливаем зависимости
+        run: |
+          cd Fitness_Tracker  # Укажи путь до проекта, если он в подпапке
+          pod install --silent || echo "No CocoaPods"
 
-    - name: Verify model file
-      run: ls -la "Fitness Tracker/Exercises.xcdatamodeld" || echo "Model file not found"
+      - name: 🔍 Запускаем тесты
+        run: |
+          cd Fitness_Tracker
+          xcodebuild test \
+            -scheme Fitness_Tracker \
+            -destination 'platform=iOS Simulator,name=iPhone 15,OS=17.0' \
+            -enableCodeCoverage YES | xcpretty && exit ${PIPESTATUS[0]}
 
-    - name: Build project
-      run: xcodebuild -project "Fitness Tracker.xcodeproj" -scheme "Fitness Tracker" -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 15' build
+      - name: 📊 Загружаем покрытие кода (опционально)
+        uses: codecov/codecov-action@v4
+        with:
+          fail_ci_if_error: true
