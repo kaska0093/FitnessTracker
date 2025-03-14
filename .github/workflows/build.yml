@@ -17,9 +17,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Шаг 2: Установка Xcode (новая версия экшн)
+      # Шаг 2: Установка Xcode (с использованием apple-actions/setup-xcode)
       - name: Set up Xcode
-        uses: actions/setup-xcode@v3
+        uses: apple-actions/setup-xcode@v2
         with:
           xcode-version: '15.2'  # Убедитесь, что используете актуальную версию Xcode
 
