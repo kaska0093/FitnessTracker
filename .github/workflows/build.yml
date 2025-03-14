@@ -36,7 +36,6 @@ jobs:
 
       - name: 🔍 Запускаем тесты
         run: |
-          cd "Fitness Tracker"
           xcodebuild test \
             -scheme "Fitness Tracker"  \
             -destination 'platform=iOS Simulator,name=iPhone 15,OS=17.0' \
