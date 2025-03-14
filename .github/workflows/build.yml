@@ -33,13 +33,17 @@ jobs:
         run: |
           cd "Fitness Tracker"
           ls -la
-
-      - name: 🔍 Запускаем тесты
+          
+      - name: 🚀 Запускаем тесты без подписывания
         run: |
           xcodebuild test \
-            -scheme "Fitness Tracker"  \
+            -project "Fitness Tracker.xcodeproj" \
+            -scheme "Fitness Tracker" \
             -destination 'platform=iOS Simulator,name=iPhone 15,OS=17.0' \
-            -enableCodeCoverage YES | xcpretty && exit ${PIPESTATUS[0]}
+            -enableCodeCoverage YES \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            PROVISIONING_PROFILE_SPECIFIER="" | xcpretty && exit ${PIPESTATUS[0]}
 
       - name: 📊 Загружаем покрытие кода (опционально)
         uses: codecov/codecov-action@v4
