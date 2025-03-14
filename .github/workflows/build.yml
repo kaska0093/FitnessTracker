@@ -15,17 +15,20 @@ jobs:
       - name: 📥 Клонируем репозиторий
         uses: actions/checkout@v4
 
+      - name: 🔍 Проверяем структуру проекта
+        run: ls -R  # Посмотреть, где находится .xcodeproj
+
       - name: 🛠️ Устанавливаем Xcode версию
         run: sudo xcode-select -s /Applications/Xcode_15.0.app  # Укажи актуальную версию
 
       - name: 📦 Устанавливаем зависимости
         run: |
-          cd "Fitness Tracker/Fitness Tracker"  # Укажи путь до проекта, если он в подпапке
+          cd "Fitness Tracker"  # Укажи путь до проекта, если он в подпапке
           pod install --silent || echo "No CocoaPods"
 
       - name: 🔍 Запускаем тесты
         run: |
-          cd "Fitness Tracker/Fitness Tracker"
+          cd "Fitness Tracker"
           xcodebuild test \
             -scheme "Fitness Tracker"  \
             -destination 'platform=iOS Simulator,name=iPhone 15,OS=17.0' \
