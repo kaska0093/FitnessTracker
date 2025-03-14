@@ -64,6 +64,7 @@ struct ContentView: View {
         }
     }
     
+    
     private func addExercise() {
         viewModel.addExercise(name: "сми", description: "Классические приседания сммм no ровной спиной")
     }
