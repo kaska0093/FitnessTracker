@@ -15,21 +15,36 @@ jobs:
       - name: 📥 Клонируем репозиторий
         uses: actions/checkout@v4
 
+      - name: 📍 Выводим текущий путь
+        run: pwd
+
+      - name: 🔍 Проверяем структуру проекта
+        run: ls -R  # Посмотреть, где находится .xcodeproj
+
       - name: 🛠️ Устанавливаем Xcode версию
         run: sudo xcode-select -s /Applications/Xcode_15.0.app  # Укажи актуальную версию
 
       - name: 📦 Устанавливаем зависимости
         run: |
-          cd Fitness_Tracker  # Укажи путь до проекта, если он в подпапке
+          cd "Fitness Tracker"  # путь до проекта
           pod install --silent || echo "No CocoaPods"
 
-      - name: 🔍 Запускаем тесты
+      - name: 🔍 Проверяем содержимое папки
         run: |
-          cd Fitness_Tracker
+          cd "Fitness Tracker"
+          ls -la
+          
+      - name: 🚀 Запускаем тесты без подписывания
+        run: |
           xcodebuild test \
-            -scheme Fitness_Tracker \
+            -project "Fitness Tracker.xcodeproj" \
+            -scheme "Fitness Tracker" \
             -destination 'platform=iOS Simulator,name=iPhone 15,OS=17.0' \
-            -enableCodeCoverage YES | xcpretty && exit ${PIPESTATUS[0]}
+            -enableCodeCoverage YES \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            PROVISIONING_PROFILE_SPECIFIER="" | xcpretty && exit ${PIPESTATUS[0]}
 
       - name: 📊 Загружаем покрытие кода (опционально)
         uses: codecov/codecov-action@v4
