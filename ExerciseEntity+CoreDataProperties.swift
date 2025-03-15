@@ -16,10 +16,10 @@ extension ExerciseEntity {
         return NSFetchRequest<ExerciseEntity>(entityName: "ExerciseEntity")
     }
 
-    @NSManaged public var descriptions: String?
-    @NSManaged public var id: UUID?
     @NSManaged public var name: String?
-    @NSManaged public var order: Int16
+    @NSManaged public var weight: Double
+    @NSManaged public var reps: Int16
+    @NSManaged public var day: TrainingDayEntity?
 
 }
 

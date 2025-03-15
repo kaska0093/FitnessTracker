@@ -13,7 +13,8 @@ struct Fitness_TrackerApp: App {
     let persistenceController = PersistenceController.shared.container.viewContext
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            MainTabView()
+                .environment(\.managedObjectContext, persistenceController)  // ✅ Передаём контекст
         }
     }
 }

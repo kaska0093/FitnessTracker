@@ -12,7 +12,7 @@ class ExerciseViewModel: ObservableObject {
     
     private var context = PersistenceController.shared.container.viewContext
 
-    @Published var exercises: [ExerciseEntity] = []
+    @Published var exercises: [ListOfExercises] = []
 
     init() {
         fetchExercises()
@@ -23,7 +23,7 @@ class ExerciseViewModel: ObservableObject {
     }
 
     func fetchExercises() {
-        let request: NSFetchRequest<ExerciseEntity> = ExerciseEntity.fetchRequest()
+        let request: NSFetchRequest<ListOfExercises> = ListOfExercises.fetchRequest()
         request.sortDescriptors = [NSSortDescriptor(key: "order", ascending: true)] // Сортировка по order
         do {
             exercises = try context.fetch(request)
@@ -31,9 +31,21 @@ class ExerciseViewModel: ObservableObject {
             print("⚠️ Ошибка загрузки: \(error)")
         }
     }
+    
+    func fetchExercises(for date: Date) -> [ExerciseEntity] {
+        let request: NSFetchRequest<ExerciseEntity> = ExerciseEntity.fetchRequest()
+        request.predicate = NSPredicate(format: "day.date == %@", date as CVarArg)
+
+        do {
+            return try context.fetch(request)
+        } catch {
+            print("Ошибка загрузки упражнений на дату: \(error.localizedDescription)")
+            return []
+        }
+    }
 
     func addExercise(name: String, description: String) {
-        let newExercise = ExerciseEntity(context: context)
+        let newExercise = ListOfExercises(context: context)
         newExercise.name = name
         newExercise.descriptions = description
         newExercise.id = UUID() // Генерируем уникальный ID
@@ -42,7 +54,7 @@ class ExerciseViewModel: ObservableObject {
         saveContext()
     }
 
-    func deleteExercise(_ exercise: ExerciseEntity) {
+    func deleteExercise(_ exercise: ListOfExercises) {
         context.delete(exercise)
         saveContext()
     }
