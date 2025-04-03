@@ -17,7 +17,7 @@ struct PersistenceController {
         container = NSPersistentContainer(name: "Exercises") // Имя модели
         container.loadPersistentStores { _, error in
             if let error = error as NSError? {
-                fatalError("⚠️ Ошибка загрузки Core Data: \(error), \(error.userInfo)")
+                fatalError("⚠️ NSPersistentContainer. Ошибка загрузки Core Data: \(error), \(error.userInfo)")
             }
         }
     }

@@ -2,7 +2,7 @@
 //  TrainingDayEntity+CoreDataClass.swift
 //  Fitness Tracker
 //
-//  Created by Nikita Shestakov on 14.03.2025.
+//  Created by Nikita Shestakov on 15.03.2025.
 //
 //
 

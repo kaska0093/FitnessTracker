@@ -11,9 +11,9 @@ import CoreData
 
 struct AddExerciseView: View {
     let date: Date
-    @Environment(\.managedObjectContext) private var viewContext  // ✅ Используем переданный контекст
-    @StateObject private var viewModel = ExerciseViewModel()
-    
+    //@Environment(\.managedObjectContext) private var viewContext  // ✅ Используем переданный контекст
+    @EnvironmentObject var viewModel: ExerciseViewModel  // ✅ Получаем из EnvironmentObject
+
     var body: some View {
         VStack {
             Text("Выберите упражнение")
@@ -23,7 +23,7 @@ struct AddExerciseView: View {
             List {
                 ForEach(viewModel.exercises) { exercise in
                     Button(action: {
-                        addExerciseToDay(exercise)
+                        viewModel.addExerciseToDay(exercise, date: date)
                     }) {
                         HStack {
                             Text(exercise.name ?? "Без названия")
@@ -36,41 +36,14 @@ struct AddExerciseView: View {
                 }
             }
         }
-        .onAppear {
-            viewModel.fetchExercises()
+//        .onAppear {
+            //viewModel.fetchExercises()
+//            viewModel.fetchTrainingDays()
+//        }
+        .onDisappear() {
+            viewModel.fetchTrainingDays()
         }
     }
     
-    func addExerciseToDay(_ exercise: ListOfExercises) {
-        // ✅ Проверяем, что viewContext не nil
-        guard let coordinator = viewContext.persistentStoreCoordinator else {
-            print("⚠️ Ошибка: persistentStoreCoordinator == nil")
-            return
-        }
 
-        let request: NSFetchRequest<TrainingDayEntity> = TrainingDayEntity.fetchRequest()
-        request.predicate = NSPredicate(format: "date == %@", date as CVarArg)
-        
-        do {
-            let results = try viewContext.fetch(request)
-            let trainingDay: TrainingDayEntity
-            
-            if let existingDay = results.first {
-                trainingDay = existingDay
-            } else {
-                trainingDay = TrainingDayEntity(context: viewContext)  // ✅ Создаём новый день
-                trainingDay.date = date
-            }
-            
-            let newExercise = ExerciseEntity(context: viewContext)
-            newExercise.name = exercise.name
-            newExercise.weight = 0.0
-            newExercise.reps = 0
-            newExercise.day = trainingDay  // ✅ Связываем упражнение с днём
-
-            try viewContext.save()  // ✅ Сохраняем
-        } catch {
-            print("❌ Ошибка сохранения: \(error.localizedDescription)")
-        }
-    }
 }

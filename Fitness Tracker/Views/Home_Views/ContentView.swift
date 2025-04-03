@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     
-    @StateObject private var viewModel = ExerciseViewModel() // Используем ViewModel
+    @EnvironmentObject var viewModel: ExerciseViewModel  // ✅ Получаем из EnvironmentObject
     @State private var selectedExercise: ListOfExercises? // Для выбора упражнения
     @State private var showingEditSheet = false // Для отображения sheet
     @State private var showingAddSheet = false // Для показа добавления
@@ -49,7 +49,6 @@ struct ContentView: View {
             
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    EditButton()
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {showingAddSheet = true }) { // Открываем sheet для добавления

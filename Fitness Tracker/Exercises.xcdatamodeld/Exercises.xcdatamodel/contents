@@ -2,9 +2,8 @@
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22758" systemVersion="23F79" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
     <entity name="ExerciseEntity" representedClassName="ExerciseEntity" syncable="YES">
         <attribute name="name" optional="YES" attributeType="String"/>
-        <attribute name="reps" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="weight" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
-        <relationship name="day" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="TrainingDayEntity" inverseName="exercises" inverseEntity="TrainingDayEntity"/>
+        <relationship name="sets" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="SetEntity" inverseName="exercise" inverseEntity="SetEntity"/>
+        <relationship name="trainigDay" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="TrainingDayEntity" inverseName="exercises" inverseEntity="TrainingDayEntity"/>
     </entity>
     <entity name="ListOfExercises" representedClassName="ListOfExercises" syncable="YES">
         <attribute name="descriptions" optional="YES" attributeType="String"/>
@@ -12,12 +11,16 @@
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="order" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
     </entity>
-    <entity name="SetEntity" representedClassName="SetEntity" syncable="YES" codeGenerationType="class">
-        <attribute name="setCount" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
-        <relationship name="relationship" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ExerciseEntity"/>
+    <entity name="SetEntity" representedClassName="SetEntity" syncable="YES">
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="index" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="isCompleted" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="reps" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="weight" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <relationship name="exercise" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ExerciseEntity" inverseName="sets" inverseEntity="ExerciseEntity"/>
     </entity>
     <entity name="TrainingDayEntity" representedClassName="TrainingDayEntity" syncable="YES">
         <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <relationship name="exercises" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ExerciseEntity" inverseName="day" inverseEntity="ExerciseEntity"/>
+        <relationship name="exercises" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ExerciseEntity" inverseName="trainigDay" inverseEntity="ExerciseEntity"/>
     </entity>
 </model>

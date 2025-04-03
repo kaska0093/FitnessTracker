@@ -10,30 +10,69 @@ import CoreData
 
 struct HomeView: View {
     @State private var selectedTab = "Рабочий стол"
-    
-    let tabs = ["Рабочий стол", "Тренировки", "Диета", "Сон"]
+    //@Environment(\.managedObjectContext) private var viewContext
+    @EnvironmentObject var viewModel: ExerciseViewModel
 
+
+    //@StateObject private var viewModel = ExerciseViewModel()
+    let tabs = ["Рабочий стол", "Упражнения", "Календарь", "Сон"]
+    
+
+    
+
+    
+    func showDeleteConfirmation() {
+        let alert = UIAlertController(title: "Подтвердите удаление",
+                                      message: "Вы уверены, что хотите удалить все тренировки? Это действие невозможно отменить.",
+                                      preferredStyle: .alert)
+        
+        alert.addAction(UIAlertAction(title: "Отмена", style: .cancel, handler: nil))
+        
+        alert.addAction(UIAlertAction(title: "Удалить", style: .destructive, handler: { _ in
+            viewModel.deleteAllTrainingDays()
+        }))
+        
+        // Получаем rootViewController через UIWindowScene
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
+            if let rootController = windowScene.windows.first?.rootViewController {
+                rootController.present(alert, animated: true, completion: nil)
+            }
+        }
+    }
+    
+
+    
     var body: some View {
+        @Environment(\.managedObjectContext) var viewContext  // <-- добавляем
+        //var viewContextt = PersistenceController.shared.container.viewContext
+
         VStack {
             // Верхний заголовок
             HStack {
-                Image(systemName: "clock")
-                    .font(.title2)
-                    .foregroundColor(.gray)
+                Button(action: {
+                    handleButtonAction()
+                }) {
+                    Image(systemName: buttonIcon())
+                        .font(.title2)
+                        .foregroundColor(.gray)
+                }
 
                 Spacer()
                 
-                Text("Тренировки")
+                Text(headerTitle())
                     .font(.title)
                     .bold()
+
                 
                 Spacer()
+                
+                menuForCurrentTab()
 
-                Image(systemName: "line.horizontal.3")
-                    .font(.title2)
-                    .foregroundColor(.gray)
+
+
             }
             .padding(.horizontal)
+
 
             // Горизонтальная полоса с вкладками
             ScrollView(.horizontal, showsIndicators: false) {
@@ -57,18 +96,103 @@ struct HomeView: View {
 
             // Отображение разных экранов
             Spacer()
-            if selectedTab == "Рабочий стол" {
-                DashboardView()
-            } else if selectedTab == "Тренировки" {
-                ContentView()
-            } else if selectedTab == "Диета" {
-                CalendarView()
-            } else if selectedTab == "Сон" {
-                SleepView()
-            }
+            selectedView()
+//            if selectedTab == "Рабочий стол" {
+//                DashboardView()
+//            } else if selectedTab == "Упражнения" {
+//                ContentView()
+//            } else if selectedTab == "Календарь" {
+//                CalendarView()
+//            } else if selectedTab == "Сон" {
+//                SleepView()
+//            }
             Spacer()
         }
     }
+}
+
+extension HomeView {
+    // MARK: - Динамический заголовок
+       func headerTitle() -> String {
+           switch selectedTab {
+           case "Упражнения": return "Мои упражнения"
+           case "Календарь": return "Календарь тренировок"
+           case "Сон": return "Анализ сна"
+           default: return "Тренировки"
+           }
+       }
+
+       // MARK: - Динамическая иконка для кнопки
+       func buttonIcon() -> String {
+           switch selectedTab {
+           case "Упражнения": return "plus"  // Кнопка добавления упражнения
+           case "Календарь": return "calendar.badge.plus" // Добавить тренировку
+           case "Сон": return "moon.zzz"  // Анализ сна
+           default: return "clock"
+           }
+       }
+
+       // MARK: - Динамическое действие кнопки
+       func handleButtonAction() {
+           switch selectedTab {
+           case "Упражнения":
+               print("Добавление нового упражнения")
+           case "Календарь":
+               print("Добавление тренировки в календарь")
+           case "Сон":
+               print("Открытие анализа сна")
+           default:
+               print("Открытие истории тренировок")
+           }
+       }
+    
+
+       // MARK: - Динамическое меню
+       @ViewBuilder
+       func menuForCurrentTab() -> some View {
+           Menu {
+               switch selectedTab {
+               case "Упражнения":
+                   Button(action: { viewModel.loadExercisesFromJSON() } ) {
+                       Label("Загрузить базовые упражнения", systemImage: "person")
+                   }
+               case "Календарь":
+                   Button(action: {
+                       showDeleteConfirmation()
+                   }) {
+                       Text("Удалить все тренировки")
+                           .padding()
+                           .background(Color.red)
+                           .foregroundColor(.white)
+                           .cornerRadius(10)
+                   }
+               case "Сон":
+                   Button(action: { print("Настройки сна") }) {
+                       Label("Настройки сна", systemImage: "gearshape")
+                   }
+               default:
+                   Button(action: { print("Выход") }) {
+                       Label("Выход", systemImage: "arrow.right.circle")
+                   }
+               }
+           } label: {
+               Image(systemName: "line.horizontal.3")
+                   .imageScale(.large)
+                   .padding()
+           }
+       }
+
+       // MARK: - Выбор отображаемого экрана
+       @ViewBuilder
+       func selectedView() -> some View {
+           switch selectedTab {
+           case "Упражнения": ContentView()
+           case "Календарь": CalendarView()
+           case "Сон": SleepView()
+           default: DashboardView()
+           }
+       }
+    
 }
 
 
@@ -80,21 +204,6 @@ struct DashboardView: View {
     }
 }
 
-struct WorkoutsView: View {
-    var body: some View {
-        Text("💪 Тренировки")
-            .font(.largeTitle)
-            .bold()
-    }
-}
-
-struct DietView: View {
-    var body: some View {
-        Text("🍏 Диета")
-            .font(.largeTitle)
-            .bold()
-    }
-}
 
 struct SleepView: View {
     var body: some View {
@@ -105,205 +214,7 @@ struct SleepView: View {
 }
 
 
-struct CalendarView: View {
-    @Environment(\.managedObjectContext) private var viewContext
-    @FetchRequest(
-        entity: TrainingDayEntity.entity(),
-        sortDescriptors: [NSSortDescriptor(keyPath: \TrainingDayEntity.date, ascending: true)]
-    ) private var trainingDays: FetchedResults<TrainingDayEntity>
 
-    @State private var selectedDate = Date()
 
-    var body: some View {
-        NavigationView {
-            VStack {
-                Text("Выберите дату тренировки")
-                    .font(.headline)
-
-                CalendarGrid(selectedDate: $selectedDate, trainingDays: trainingDays)
-
-                NavigationLink(destination: WorkoutDetailView(date: selectedDate)) {
-                    Text("Перейти к тренировке")
-                        .padding()
-                        .background(Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
-                }
-                .padding()
-            }
-            .navigationTitle("График тренировок")
-        }
-    }
-}
-
-struct CalendarGrid: View {
-    @State private var currentMonth: Date = Date()
-    @Binding var selectedDate: Date
-    let trainingDays: FetchedResults<TrainingDayEntity>
-
-    let calendar = Calendar.current
-    let columns = Array(repeating: GridItem(.flexible()), count: 7)
-
-    var body: some View {
-        VStack {
-            // Навигация по месяцам
-            HStack {
-                Button(action: { changeMonth(by: -1) }) {
-                    Image(systemName: "chevron.left")
-                        .padding()
-                }
-
-                Text(currentMonthFormatted())
-                    .font(.title2)
-                    .fontWeight(.bold)
-
-                Button(action: { changeMonth(by: 1) }) {
-                    Image(systemName: "chevron.right")
-                        .padding()
-                }
-            }
-            .padding(.vertical)
-
-            // 📅 Грид с днями
-            LazyVGrid(columns: columns, spacing: 10) {
-                ForEach(daysInMonth(), id: \.self) { day in
-                    if let date = day {
-                        Button(action: {
-                            selectedDate = date
-                        }) {
-                            Text("\(calendar.component(.day, from: date))")
-                                .frame(width: 40, height: 40)
-                                .background(getBackgroundColor(for: date)) // ✅ Фон зависит от условий
-                                .clipShape(Circle())
-                                .foregroundColor(getTextColor(for: date)) // ✅ Цвет текста
-                        }
-                    } else {
-                        Text("")
-                            .frame(width: 40, height: 40)
-                    }
-                }
-            }
-            .padding()
-            .background(Color.white) // ✅ Белый фон для всего календаря
-            .cornerRadius(15) // ✅ Закругляем углы
-            .shadow(radius: 5) // ✅ Лёгкая тень для красоты
-        }
-    }
-
-    // 📌 Функция смены месяца
-    private func changeMonth(by value: Int) {
-        if let newMonth = calendar.date(byAdding: .month, value: value, to: currentMonth) {
-            currentMonth = newMonth
-        }
-    }
-
-    // 📌 Форматирование месяца (например, "Март 2025")
-    private func currentMonthFormatted() -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "LLLL yyyy"
-        formatter.locale = Locale(identifier: "ru_RU")
-        return formatter.string(from: currentMonth).capitalized
-    }
-
-    // 📌 Получаем список дней месяца
-    private func daysInMonth() -> [Date?] {
-        guard let range = calendar.range(of: .day, in: .month, for: currentMonth) else { return [] }
-        let firstDayOfMonth = calendar.date(from: calendar.dateComponents([.year, .month], from: currentMonth))!
-        let firstWeekday = calendar.component(.weekday, from: firstDayOfMonth)
-
-        var days: [Date?] = Array(repeating: nil, count: firstWeekday - 1)
-        days += range.map { day -> Date in
-            return calendar.date(byAdding: .day, value: day - 1, to: firstDayOfMonth)!
-        }
-
-        return days
-    }
-
-    // 📌 Проверяем, есть ли тренировка в этот день
-    private func isTrainingDay(_ date: Date) -> Bool {
-        trainingDays.contains { trainingDay in
-            if let trainingDate = trainingDay.date {
-                return calendar.isDate(trainingDate, inSameDayAs: date)
-            }
-            return false
-        }
-    }
-
-    // 📌 Определяем цвет фона для дня
-    private func getBackgroundColor(for date: Date) -> Color {
-        if calendar.isDate(selectedDate, inSameDayAs: date) {
-            return Color.blue.opacity(0.8) // ✅ Синий фон для выбранного дня
-        } else if isTrainingDay(date) {
-            return Color.green.opacity(0.8) // ✅ Зелёный фон для тренировочных дней
-        } else {
-            return Color.clear // Остальные дни без фона
-        }
-    }
-
-    // 📌 Определяем цвет текста для дня
-    private func getTextColor(for date: Date) -> Color {
-        return (calendar.isDate(selectedDate, inSameDayAs: date) || isTrainingDay(date)) ? .white : .black
-    }
-}
-
-struct WorkoutDetailView: View {
-    let date: Date
-    @Environment(\.managedObjectContext) private var viewContext
-    @StateObject private var viewModel = ExerciseViewModel()
-    @FetchRequest(entity: TrainingDayEntity.entity(), sortDescriptors: [])
-    private var trainingDays: FetchedResults<TrainingDayEntity>
-    
-    private var currentTrainingDay: TrainingDayEntity? {
-        trainingDays.first { Calendar.current.isDate($0.date ?? Date(), inSameDayAs: date) }
-    }
-    
-    var body: some View {
-        VStack {
-            Text("Тренировка на \(formattedDate(date))")
-                .font(.headline)
-                .padding()
-            
-            if let trainingDay = currentTrainingDay, let exercises = trainingDay.exercises as? Set<ExerciseEntity> {
-                List {
-                    ForEach(Array(exercises), id: \.self) { exercise in
-                        VStack(alignment: .leading) {
-                            Text(exercise.name ?? "Без названия")
-                                .font(.headline)
-                            Text("Вес: \(exercise.weight, specifier: "%.1f") кг, Повторений: \(exercise.reps)")
-                                .font(.subheadline)
-                                .foregroundColor(.gray)
-                        }
-                    }
-                }
-            } else {
-                Text("Нет упражнений на этот день")
-                    .foregroundColor(.gray)
-                    .padding()
-            }
-            
-            Button("Добавить упражнение") {
-                showAddExerciseSheet.toggle()
-            }
-            .padding()
-            .background(Color.green)
-            .foregroundColor(.white)
-            .cornerRadius(10)
-            .sheet(isPresented: $showAddExerciseSheet) {
-                AddExerciseView(date: date)
-            }
-            
-            Spacer()
-        }
-        .padding()
-    }
-    
-    @State private var showAddExerciseSheet = false
-
-    func formattedDate(_ date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .long
-        return formatter.string(from: date)
-    }
-}
 
 
